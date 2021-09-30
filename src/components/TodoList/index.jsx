@@ -1,52 +1,49 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react/cjs/react.development'
+import React, { useEffect, useState  } from 'react'
 import './TodoList.css'
 const TodoList = ({ todos, setShowAdd, showAdd, deleteTodo, setEditing, handleChangeLevel, setNewTodos, level, filterList, setFilterList }) => {
-  const [sortType, setSortType] = useState('Id')
-  const selectOption = [
-    'STT',
-    'Tên công việc',
-    'Mức độ'
-  ]
+  const [sortType, setSortType] = useState(false)
+  // const selectOption = [
+  //   'STT',
+  //   'Tên công việc',
+  //   'Mức độ'
+  // ]
 
   useEffect(() => {
+    // eslint-disable-next-line 
     sorting()
   }, [todos.length])
 
   const getColor = (level) => {
-    if (level === "Làm ngay") {
-      return "danger"
-    }
-    else if (level === "Phải làm nhưng chưa cần làm ngay") {
-      return "warning"
-    }
-    else if (level === "Làm bao giờ cũng được") {
-      return "success"
-    }
-    else if (level === "Không là chả sao") {
-      return "primary"
-    }
+    if (level === "Làm ngay") return "danger"
+    else if (level === "Phải làm nhưng chưa cần làm ngay") return "warning"
+    else if (level === "Làm bao giờ cũng được") return "success"
+    else if (level === "Không là chả sao") return "primary"
   }
 
   const sorting = () => {
-    if (sortType === 'STT') {
-      todos.sort((a, b) => {
+    const newTodo = [...todos]
+    if(sortType === "STT") {
+      newTodo.sort((a,b) => {
         return a.id > b.id ? 1 : -1
       })
-      setNewTodos([...todos])
-    } else if (sortType === 'Tên công việc') {
-      todos.sort((a, b) => {
+    }
+    else if(sortType === "Tên công việc") {
+      newTodo.sort((a,b) => {
         return a.name > b.name ? 1 : -1
       })
-      setNewTodos([...todos])
-    } else {
-      todos.sort((a, b) => {
+    }
+    else{
+      newTodo.sort((a,b) => {
         const indexA = level.findIndex(item => item === a.level)
         const indexB = level.findIndex(item => item === b.level)
         return indexA > indexB ? 1 : -1
       })
-      setNewTodos([...todos])
     }
+    setNewTodos(newTodo)
+  }
+
+  const onChangeSort = (e) => {
+    setSortType(e.target.value)
   }
 
   const filterLevel = (level) => {
@@ -63,12 +60,15 @@ const TodoList = ({ todos, setShowAdd, showAdd, deleteTodo, setEditing, handleCh
         <h3>Danh sách công việc:</h3>
         <div className="wrapper-bottom">        
           <button onClick={() => sorting()} className="btn-add">SẮP XẾP</button>
-          <select className="select_sort" name="level" id="level" value={sortType} onChange={(e) => setSortType(e.target.value)}>
-            {
-              selectOption.map(select => (
-                <option value={select}>{select}</option>
-              ))
-            }
+          <select className="select_sort" name="level" id="level" value={sortType} onChange={onChangeSort}>
+            
+              {/* selectOption.map(select => (
+                 <option value={select}>{select}</option>
+               )) */}
+              <option value="STT">Sắp xếp theo ID</option>
+              <option value="Tên công việc">Sắp xếp theo tên công việc</option>
+              <option value="Mức độ">Sắp xếp theo mức độ</option>
+            
           </select>
         </div>
       </div>
